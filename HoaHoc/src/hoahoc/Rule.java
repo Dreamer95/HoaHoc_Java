@@ -18,19 +18,19 @@ public class Rule {
         private String name;
         private ArrayList<String> giathiet;
         private ArrayList<String> ketluan;
-        ArrayList<String> Giathiet;
-        ArrayList<String> KetLuan;
+      //  ArrayList<String> Giathiet;
+      //  ArrayList<String> KetLuan;
         
-        public  String Ten()
+        public  String getTen()
         {
             return name;
         }
-        public ArrayList<String> GiaThiet()
+        public ArrayList<String> getGiaThiet()
         {
             return giathiet;
         }
         
-        public ArrayList<String> KetLuan()
+        public ArrayList<String> getKetLuan()
         {
             return ketluan;
         }

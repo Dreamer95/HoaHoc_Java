@@ -40,7 +40,7 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         input_gt = new ArrayList<>();
         input_Kl = new ArrayList<>();
         RuleList = new ArrayList<>();
-        jLabel4 = new JLabel(" ");
+       // jLabel4 = new JLabel(" ");
     }
 
     /**
@@ -70,6 +70,11 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         jLabel1.setText("Chất Tham Gia (ví dụ: H2 , O2):");
 
         jTextField1.setName("txtInput_Giathiet"); // NOI18N
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Chất Sản Phẩm (ví dụ: H2O):");
 
@@ -81,9 +86,15 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
             }
         });
 
+        list1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                list1ActionPerformed(evt);
+            }
+        });
+
         jLabel3.setText("Kết quả:");
 
-        jLabel4.setText("jLabel4");
+        jLabel4.setForeground(new java.awt.Color(214, 20, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,8 +105,8 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
@@ -119,11 +130,13 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -135,23 +148,35 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         
         
         try {
+            list1.removeAll();
             RuleList = new ArrayList<>();
+            LoiGiai = new ArrayList<>();          
             XuLyFile();
+            XuLyFile_CB();
             input_gt = new ArrayList<>();
             input_Kl = new ArrayList<>();
-//            if (!"".equals(jTextField1.getText()) && !"".equals(jTextField2.getText()))
-//            {
-//
-//                XulyInput_giathiet();
-//                XulyInput_ketluan();
-//                SuyDienTien_2_input();
-//
-//            }
+            if (!"".equals(jTextField1.getText()) && !"".equals(jTextField2.getText()))
+            {
+
+                XulyInput_giathiet();
+                XulyInput_ketluan();
+                SuyDienLui();
+                XuatKetQua(LoiGiaiRutGon);
+
+            }
         } catch (IOException ex) {
             Logger.getLogger(DieuCheHoaHoc.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void list1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_list1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_list1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -161,9 +186,11 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
     
     ArrayList<Rule> RuleList = new ArrayList<>();
     private void XuLyFile() throws FileNotFoundException{
+        
+       try{ 
         FileInputStream fis = new FileInputStream("Rule.txt");
         Scanner scan = new Scanner(fis);
-       
+    
         while(scan.hasNextLine()){
                 ArrayList<String> gt_list = new ArrayList<>();
                 ArrayList<String> kl_list = new ArrayList<>();
@@ -185,61 +212,25 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 String conclusion = line.substring(line.indexOf(">") + 1).trim(); // gán từ ký tự > cho đến hết
                 while (conclusion.contains("+"))
                 {
-                    gt_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
+                    kl_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
                     conclusion = conclusion.substring(conclusion.indexOf("+") + 1).trim();
                 }
-                gt_list.add(conclusion.trim());
+                kl_list.add(conclusion.trim());
                 
                 // Gọi constructor tạo Rule
                     Rule newRule = new Rule(gt_list, kl_list, name);
 
                     RuleList.add(newRule);
         }    
-        
+       } catch(FileNotFoundException ex) {
+           JOptionPane.showMessageDialog(rootPane,"Loi doc file");
+       }
+    
     }
     
-//    private void XuLyFile() throws FileNotFoundException, IOException
-//    {
-//        
-//        try {
-//            BufferedReader in = new BufferedReader (new FileReader("Rule.txt"));
-//            String line = null;//in.readLine();
-//            while((line = in.readLine()) != null)
-//            {
-//                ArrayList<String> gt_list = new ArrayList<>();
-//                ArrayList<String> kl_list = new ArrayList<>();
-//                //Xu ly ten luat
-//                int index = line.indexOf(":");
-//                String name = line.substring(0,index);
-//                
-//                //Xu ly gia thiet 
-//                String Suppose;
-//                Suppose = line.substring(index+1, line.indexOf("-") - index - 1).trim();
-//                while(Suppose.contains("+"))
-//                {
-//                    gt_list.add(Suppose.substring(0,Suppose.indexOf("+") -1).trim());
-//                    Suppose = Suppose.substring(Suppose.indexOf("+") + 1).trim();
-//                            
-//                }
-//                gt_list.add(Suppose);
-//                String conclusion = line.substring(line.indexOf(">") + 1).trim(); // gán từ ký tự > cho đến hết
-//                while (conclusion.contains("+"))
-//                {
-//                    gt_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
-//                    conclusion = conclusion.substring(conclusion.indexOf("+") + 1).trim();
-//                }
-//                gt_list.add(conclusion.trim());
-//                
-//                // Gọi constructor tạo Rule
-//                    Rule newRule = new Rule(gt_list, kl_list, name);
-//
-//                    RuleList.add(newRule);
-//            }
-//        }catch(IOException ex){
-//            JOptionPane.showMessageDialog(rootPane,"Loi doc file");
-//        }
-//    }
     
+//   
+    ArrayList<Rule> ruleList_CB = new ArrayList<>();
     private void XuLyFile_CB() throws FileNotFoundException, IOException
     {
         
@@ -257,21 +248,21 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 String name = line.substring(0,index);
                 
                 //Xu ly gia thiet 
-                String Suppose  = line.substring(index+1, line.indexOf("-") - index - 1).trim();
+                String Suppose  = line.substring(index+1, line.indexOf("-") - 1).trim();
                 while(Suppose.contains("+"))
                 {
                     gt_list.add(Suppose.substring(0,Suppose.indexOf("+") -1).trim());
                     Suppose = Suppose.substring(Suppose.indexOf("+") + 1).trim();
                             
-                }
+                }                   
                 gt_list.add(Suppose);
                 String conclusion = line.substring(line.indexOf(">") + 1).trim(); // gán từ ký tự > cho đến hết
                 while (conclusion.contains("+"))
                 {
-                    gt_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
+                    kl_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
                     conclusion = conclusion.substring(conclusion.indexOf("+") + 1).trim();
                 }
-                gt_list.add(conclusion.trim());
+                kl_list.add(conclusion.trim());
                 
                 // Gọi constructor tạo Rule
                     Rule newRule = new Rule(gt_list, kl_list, name);
@@ -301,7 +292,7 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
     private void XulyInput_ketluan()
     {
         String input_ketluan = jTextField2.getText().trim();
-        while (input_ketluan.indexOf(",") != -1)
+        while (input_ketluan.contains(","))
         {
             input_Kl.add(input_ketluan.substring(0, input_ketluan.indexOf(",")).trim());
             input_ketluan = input_ketluan.substring(input_ketluan.indexOf(",") + 1).trim();
@@ -335,9 +326,27 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         else
             return false;
     }
+    
+    private boolean Kiemtra_Lui(ArrayList<String> base_giathiet, ArrayList<String> ketluan){
+         for (int i = 0; i < base_giathiet.size(); i++)
+            {
+               
+                for (int j = 0; j < ketluan.size(); j++)
+                {
+                    if ((base_giathiet.get(i)).compareTo(ketluan.get(j))==0)
+                    {
+                       
+                        return true;
+                    }
+
+                }
+              
+            }
+            return false;
+    }
 
     //bộ lọc các luât
-    public void Filter(ArrayList<String> input, ArrayList<String> output)
+    private void Filter(ArrayList<String> input, ArrayList<String> output)
     {
         for (int i = 0; i < output.size(); i++)
         {
@@ -352,21 +361,22 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 input.add(output.get(i));
         }
     }
-    ArrayList<Rule> ruleList_CB = new ArrayList<>();
-    private void SuyDienTien_2_input()
+    ArrayList<Rule> LoiGiai = new ArrayList<>();
+    private void SuyDienTien()
         {
             ArrayList<String> input = input_gt;
-            ArrayList<Rule> LoiGiai = new ArrayList<>();
+            LoiGiai = new ArrayList<>();
             ArrayList<Rule> XuLy = RuleList;
             while (!Kiemtra(input, input_Kl) && !XuLy.isEmpty())
             {
                 int i;
                 for (i = 0; i < XuLy.size(); i++)
                 {
-                    if (Kiemtra(input, XuLy.get(i).Giathiet))
+                    //Rule t = XuLy.get(i);
+                    if (Kiemtra(input, XuLy.get(i).getGiaThiet()))
                     {
                         LoiGiai.add(XuLy.get(i));
-                        Filter(input, XuLy.get(i).KetLuan);
+                        Filter(input, XuLy.get(i).getKetLuan());
                         XuLy.remove(XuLy.get(i));
                         i = 0;
                         break;
@@ -375,29 +385,80 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 if (i == XuLy.size())
                     break;
             }
-            String str;
-            int dem = 0;
-            if (Kiemtra(input, input_Kl))
+         
+         //   JOptionPane.showMessageDialog(rootPane," Có tổng số " + dem);
+           
+        }
+    
+    ArrayList<Rule> LoiGiaiRutGon = new ArrayList<>();
+    private void SuyDienLui(){ // dùng để rút gọn lời giải của suy diễn tiến
+        SuyDienTien();
+        input_gt = new ArrayList<>();
+        XulyInput_giathiet();
+        ArrayList<String> dich = input_Kl;
+        LoiGiaiRutGon = new ArrayList<>();
+        ArrayList<Rule> XuLy_lui = LoiGiai; // gán list XuLy_Lui = list lời giải của suy diễn tiến
+        while (!Kiemtra(dich, input_gt) && XuLy_lui.size() != 0)
             {
-                for (int k = 0; k < LoiGiai.size(); k++)
+                int i;
+                for (i = 0; i != XuLy_lui.size(); i++)
+                    if (Kiemtra_Lui(XuLy_lui.get(i).getKetLuan(),dich))
+                    {
+                        LoiGiaiRutGon.add(XuLy_lui.get(i));
+                        Filter(dich, XuLy_lui.get(i).getGiaThiet());
+                        XuLy_lui.remove(XuLy_lui.get(i));
+                        i = 0;
+                        break;
+                    }
+                if (i == XuLy_lui.size())
+                    break;
+            }
+    }
+    private void XuatKetQua(ArrayList<Rule> kq){
+        
+           String str;
+            int dem = 0;
+           // if (Kiemtra(input, input_Kl))
+           // {
+                for (int k = kq.size()-1; k >= 0; k--)
                 {
-                  //  str = LoiGiai[k].Ten + ": ";
-                   String str1 = LoiGiai.get(k).Ten();
                     for (int m = 0; m < ruleList_CB.size(); m++)
                     {
-                        if (str1.compareTo(ruleList_CB.get(m).Ten()) == 0)
+                        if (kq.get(k).getTen().compareTo(ruleList_CB.get(m).getTen()) == 0)
                         {
+                            str = ruleList_CB.get(m).getTen() + ": ";
                             dem += 1;
+                            for (int i = 0; i < ruleList_CB.get(m).getGiaThiet().size(); i++)
+                            {
+                              //  if (i >= 1)
+                                if(ruleList_CB.get(m).getGiaThiet().size()==1 || i == ruleList_CB.get(m).getGiaThiet().size()-1)
+                                    str = str + ruleList_CB.get(m).getGiaThiet().get(i);
+                                else
+                                    str = str + ruleList_CB.get(m).getGiaThiet().get(i) + " + ";
+
+                            }
+                           // str = str.Substring(0, str.Length);
+                            str = str + " -> ";
+                            for (int j = 0; j < ruleList_CB.get(m).getKetLuan().size(); j++)
+                            {
+                                if (j == ruleList_CB.get(m).getKetLuan().size() - 1)
+                                    str = str + ruleList_CB.get(m).getKetLuan().get(j);
+                                else
+                                    str = str + ruleList_CB.get(m).getKetLuan().get(j) + " + ";
+                            }
                             
-                            list1.add(str1);
+                            list1.add(str);
+                            break;
                         }
                     }
                 }
-            }
-            JOptionPane.showMessageDialog(rootPane," Có tổng số " + dem);
-        }
+        //    }
+        jLabel4.setText("Có "+dem+" phương trình");
+    }
 
-    
+    public void items(){
+        
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
