@@ -6,6 +6,8 @@
 package hoahoc;
 
 import java.awt.List;
+import java.awt.event.KeyListener;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;/*
 import javax.swing.JFrame;
@@ -27,9 +30,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
-
-public class DieuCheHoaHoc extends javax.swing.JFrame {
+public class DieuCheHoaHoc extends javax.swing.JFrame
+        
+{
 
     /**
      * Creates new form DieuCheHoaHoc
@@ -40,7 +45,7 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         input_gt = new ArrayList<>();
         input_Kl = new ArrayList<>();
         RuleList = new ArrayList<>();
-       // jLabel4 = new JLabel(" ");
+        // jLabel4 = new JLabel(" ");
     }
 
     /**
@@ -60,6 +65,7 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         list1 = new java.awt.List();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Điều chế chất hóa học");
@@ -70,16 +76,28 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         jLabel1.setText("Chất Tham Gia (ví dụ: H2 , O2):");
 
         jTextField1.setName("txtInput_Giathiet"); // NOI18N
+        jTextField1.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                jTextField1CaretPositionChanged(evt);
+            }
+        });
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
             }
         });
 
         jLabel2.setText("Chất Sản Phẩm (ví dụ: H2O):");
 
         jButton1.setForeground(java.awt.Color.red);
-        jButton1.setText("Điều chế");
+        jButton1.setText("Xử Lý");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -96,6 +114,18 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
 
         jLabel4.setForeground(new java.awt.Color(214, 20, 20));
 
+        jCheckBox1.setText("Chế độ tìm kiếm Phương Trình Hóa Học");
+        jCheckBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCheckBox1MouseClicked(evt);
+            }
+        });
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +138,10 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addComponent(jCheckBox1))
                     .addComponent(jLabel1)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 514, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
@@ -127,7 +160,9 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jCheckBox1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16)
@@ -145,29 +180,41 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         //JOptionPane.showMessageDialog(null,jTextField1.getText());
-        
-        
+
         try {
-            list1.removeAll();
-            RuleList = new ArrayList<>();
-            LoiGiai = new ArrayList<>();          
-            XuLyFile();
-            XuLyFile_CB();
-            input_gt = new ArrayList<>();
-            input_Kl = new ArrayList<>();
-            if (!"".equals(jTextField1.getText()) && !"".equals(jTextField2.getText()))
-            {
-
-                XulyInput_giathiet();
-                XulyInput_ketluan();
-                SuyDienLui();
-                XuatKetQua(LoiGiaiRutGon);
-
+            if (!jCheckBox1.isSelected()) {
+                list1.removeAll();
+                XuLyFile();
+                XuLyFile_CB();
+                if (!"".equals(jTextField1.getText()) && !"".equals(jTextField2.getText())) {
+                    XulyInput_giathiet();
+                    XulyInput_ketluan();
+                    SuyDienLui();
+                    XuatKetQua(LoiGiaiRutGon);
+                }
+            }
+            else{
+                list1.removeAll();
+                XuLyFile();
+                XuLyFile_CB();
+                if(!"".equals(jTextField1.getText())){
+                    XulyInput_giathiet();
+                    Find_GT();
+                    XuatKetQua(listTimKiem);
+                }
+                else if(!"".equals(jTextField2.getText())){
+                    XulyInput_ketluan();
+                    Find_KL();
+                    XuatKetQua(listTimKiem);
+                }
+                else{
+                    jLabel4.setText("Hãy nhập chất cần tìm");
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(DieuCheHoaHoc.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -178,106 +225,121 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_list1ActionPerformed
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jCheckBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox1MouseClicked
+        // TODO add your handling code here:
+        jLabel4.removeAll();
+        jTextField1.removeAll();
+        jTextField2.removeAll();
+    }//GEN-LAST:event_jCheckBox1MouseClicked
+
+    private void jTextField1CaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextField1CaretPositionChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1CaretPositionChanged
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        // TODO add your handling code here:
+      //  jTextField1.getText().toUpperCase();
+       // evt.getKeyChar() = this.toUpperCase();
+    }//GEN-LAST:event_jTextField1KeyTyped
+
     /**
      * @param args the command line arguments
      */
-    
-    
-    
     ArrayList<Rule> RuleList = new ArrayList<>();
-    private void XuLyFile() throws FileNotFoundException{
-        
-       try{ 
-        FileInputStream fis = new FileInputStream("Rule.txt");
-        Scanner scan = new Scanner(fis);
-    
-        while(scan.hasNextLine()){
+
+    private void XuLyFile() throws FileNotFoundException {
+
+        try {
+            RuleList = new ArrayList<>();
+            FileInputStream fis = new FileInputStream("Rule.txt");
+            Scanner scan = new Scanner(fis);
+
+            while (scan.hasNextLine()) {
                 ArrayList<String> gt_list = new ArrayList<>();
                 ArrayList<String> kl_list = new ArrayList<>();
                 String line = scan.nextLine();
                 //Xu ly ten luat
                 int index = line.indexOf(":");
-                String name = line.substring(0,index);
-                
+                String name = line.substring(0, index);
+
                 //Xu ly gia thiet 
                 String Suppose;
-                Suppose = line.substring(index+1, line.indexOf("-") - 1).trim();
-                while(Suppose.contains("+"))
-                {
-                    gt_list.add(Suppose.substring(0,Suppose.indexOf("+") -1).trim());
+                Suppose = line.substring(index + 1, line.indexOf("-") - 1).trim();
+                while (Suppose.contains("+")) {
+                    gt_list.add(Suppose.substring(0, Suppose.indexOf("+") - 1).trim());
                     Suppose = Suppose.substring(Suppose.indexOf("+") + 1).trim();
-                            
+
                 }
                 gt_list.add(Suppose);
                 String conclusion = line.substring(line.indexOf(">") + 1).trim(); // gán từ ký tự > cho đến hết
-                while (conclusion.contains("+"))
-                {
+                while (conclusion.contains("+")) {
                     kl_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
                     conclusion = conclusion.substring(conclusion.indexOf("+") + 1).trim();
                 }
                 kl_list.add(conclusion.trim());
-                
-                // Gọi constructor tạo Rule
-                    Rule newRule = new Rule(gt_list, kl_list, name);
 
-                    RuleList.add(newRule);
-        }    
-       } catch(FileNotFoundException ex) {
-           JOptionPane.showMessageDialog(rootPane,"Loi doc file");
-       }
-    
+                // Gọi constructor tạo Rule
+                Rule newRule = new Rule(gt_list, kl_list, name);
+
+                RuleList.add(newRule);
+            }
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Loi doc file");
+        }
+
     }
-    
-    
 //   
     ArrayList<Rule> ruleList_CB = new ArrayList<>();
-    private void XuLyFile_CB() throws FileNotFoundException, IOException
-    {
-        
+
+    private void XuLyFile_CB() throws FileNotFoundException, IOException {
+
         try {
+            ruleList_CB = new ArrayList<>();
             File f = new File("Rule_CB.txt");
             FileReader in = new FileReader(f);
             BufferedReader br = new BufferedReader(in);
-            String line ;
-            while((line = br.readLine()) != null)
-            {
+            String line;
+            while ((line = br.readLine()) != null) {
                 ArrayList<String> gt_list = new ArrayList<>();
                 ArrayList<String> kl_list = new ArrayList<>();
                 //Xu ly ten luat
                 int index = line.indexOf(":");
-                String name = line.substring(0,index);
-                
+                String name = line.substring(0, index);
+
                 //Xu ly gia thiet 
-                String Suppose  = line.substring(index+1, line.indexOf("-") - 1).trim();
-                while(Suppose.contains("+"))
-                {
-                    gt_list.add(Suppose.substring(0,Suppose.indexOf("+") -1).trim());
+                String Suppose = line.substring(index + 1, line.indexOf("-") - 1).trim();
+                while (Suppose.contains("+")) {
+                    gt_list.add(Suppose.substring(0, Suppose.indexOf("+") - 1).trim());
                     Suppose = Suppose.substring(Suppose.indexOf("+") + 1).trim();
-                            
-                }                   
+
+                }
                 gt_list.add(Suppose);
                 String conclusion = line.substring(line.indexOf(">") + 1).trim(); // gán từ ký tự > cho đến hết
-                while (conclusion.contains("+"))
-                {
+                while (conclusion.contains("+")) {
                     kl_list.add(conclusion.substring(0, conclusion.indexOf("+") - 1).trim());
                     conclusion = conclusion.substring(conclusion.indexOf("+") + 1).trim();
                 }
                 kl_list.add(conclusion.trim());
-                
-                // Gọi constructor tạo Rule
-                    Rule newRule = new Rule(gt_list, kl_list, name);
 
-                    ruleList_CB.add(newRule);
+                // Gọi constructor tạo Rule
+                Rule newRule = new Rule(gt_list, kl_list, name);
+
+                ruleList_CB.add(newRule);
             }
-        }finally{
-            
+        } finally {
+
         }
     }
-    
+
     //xu ly input gia thiet
     ArrayList<String> input_gt = new ArrayList<>();
-    private void XulyInput_giathiet()
-    {
+
+    private void XulyInput_giathiet() {
+        input_gt = new ArrayList<>();
         String input_giathiet = jTextField1.getText();
         while (input_giathiet.contains(",")) // nếu không tìm thấy dấu "," thì dừng (hàm đó k tìm thấy trả về -1 )
         {
@@ -289,11 +351,11 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
 
     //xu ly input ket luan
     ArrayList<String> input_Kl = new ArrayList<>();
-    private void XulyInput_ketluan()
-    {
+
+    private void XulyInput_ketluan() {
+        input_Kl = new ArrayList<>();
         String input_ketluan = jTextField2.getText().trim();
-        while (input_ketluan.contains(","))
-        {
+        while (input_ketluan.contains(",")) {
             input_Kl.add(input_ketluan.substring(0, input_ketluan.indexOf(",")).trim());
             input_ketluan = input_ketluan.substring(input_ketluan.indexOf(",") + 1).trim();
         }
@@ -301,18 +363,14 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
     }
 
     // hàm kiểm tra, so sánh chuỗi
-
-    private boolean Kiemtra(ArrayList<String> base_giathiet, ArrayList<String> ketluan)
-    {
+    private boolean Kiemtra(ArrayList<String> base_giathiet, ArrayList<String> ketluan) {
 
         int count = 0;
 
-        for (int i = 0; i < base_giathiet.size(); i++)
-        {
+        for (int i = 0; i < base_giathiet.size(); i++) {
 
-            for (int j = 0; j < ketluan.size(); j++)
-            {
-                if (base_giathiet.get(i).compareTo(ketluan.get(j)) == 0) // kiểm tra trùng hết các ký tự
+            for (int j = 0; j < ketluan.size(); j++) {
+                if (base_giathiet.get(i).equalsIgnoreCase(ketluan.get(j))) // kiểm tra trùng hết các ký tự
                 {
 
                     count++;
@@ -322,143 +380,167 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
 
         }
         if (count == ketluan.size()) // nếu đếm đủ thì trả về true
+        {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-    
-    private boolean Kiemtra_Lui(ArrayList<String> base_giathiet, ArrayList<String> ketluan){
-         for (int i = 0; i < base_giathiet.size(); i++)
-            {
-               
-                for (int j = 0; j < ketluan.size(); j++)
-                {
-                    if ((base_giathiet.get(i)).compareTo(ketluan.get(j))==0)
-                    {
-                       
-                        return true;
-                    }
 
+    private boolean Kiemtra_Lui(ArrayList<String> base_giathiet, ArrayList<String> ketluan) {
+        for (int i = 0; i < base_giathiet.size(); i++) {
+
+            for (int j = 0; j < ketluan.size(); j++) {
+                if ((base_giathiet.get(i)).equalsIgnoreCase(ketluan.get(j))) {
+
+                    return true;
                 }
-              
+
             }
-            return false;
+
+        }
+        return false;
     }
 
     //bộ lọc các luât
-    private void Filter(ArrayList<String> input, ArrayList<String> output)
-    {
-        for (int i = 0; i < output.size(); i++)
-        {
+    private void Filter(ArrayList<String> input, ArrayList<String> output) {
+        for (int i = 0; i < output.size(); i++) {
             boolean k = true;
-            for (int j = 0; j < input.size(); j++)
-                if(input.get(j).compareTo(output.get(i))== 0)
-                {
+            for (int j = 0; j < input.size(); j++) {
+                if (input.get(j).equalsIgnoreCase(output.get(i))) {
                     k = false;
                     break;
                 }
-            if (k)
+            }
+            if (k) {
                 input.add(output.get(i));
+            }
         }
     }
     ArrayList<Rule> LoiGiai = new ArrayList<>();
-    private void SuyDienTien()
-        {
-            ArrayList<String> input = input_gt;
-            LoiGiai = new ArrayList<>();
-            ArrayList<Rule> XuLy = RuleList;
-            while (!Kiemtra(input, input_Kl) && !XuLy.isEmpty())
-            {
-                int i;
-                for (i = 0; i < XuLy.size(); i++)
-                {
-                    //Rule t = XuLy.get(i);
-                    if (Kiemtra(input, XuLy.get(i).getGiaThiet()))
-                    {
-                        LoiGiai.add(XuLy.get(i));
-                        Filter(input, XuLy.get(i).getKetLuan());
-                        XuLy.remove(XuLy.get(i));
-                        i = 0;
-                        break;
-                    }
-                }
-                if (i == XuLy.size())
+
+    private void SuyDienTien() {
+        ArrayList<String> input = input_gt;
+        LoiGiai = new ArrayList<>();
+        ArrayList<Rule> XuLy = RuleList;
+        while (!Kiemtra(input, input_Kl) && !XuLy.isEmpty()) {
+            int i;
+            for (i = 0; i < XuLy.size(); i++) {
+                //Rule t = XuLy.get(i);
+                if (Kiemtra(input, XuLy.get(i).getGiaThiet())) {
+                    LoiGiai.add(XuLy.get(i));
+                    Filter(input, XuLy.get(i).getKetLuan());
+                    XuLy.remove(XuLy.get(i));
+                    i = 0;
                     break;
+                }
             }
-         
-         //   JOptionPane.showMessageDialog(rootPane," Có tổng số " + dem);
-           
+            if (i == XuLy.size()) {
+                break;
+            }
         }
-    
+
+        //   JOptionPane.showMessageDialog(rootPane," Có tổng số " + dem);
+    }
+
     ArrayList<Rule> LoiGiaiRutGon = new ArrayList<>();
-    private void SuyDienLui(){ // dùng để rút gọn lời giải của suy diễn tiến
+
+    private void SuyDienLui() { // dùng để rút gọn lời giải của suy diễn tiến
         SuyDienTien();
         input_gt = new ArrayList<>();
         XulyInput_giathiet();
         ArrayList<String> dich = input_Kl;
         LoiGiaiRutGon = new ArrayList<>();
         ArrayList<Rule> XuLy_lui = LoiGiai; // gán list XuLy_Lui = list lời giải của suy diễn tiến
-        while (!Kiemtra(dich, input_gt) && XuLy_lui.size() != 0)
-            {
-                int i;
-                for (i = 0; i != XuLy_lui.size(); i++)
-                    if (Kiemtra_Lui(XuLy_lui.get(i).getKetLuan(),dich))
-                    {
-                        LoiGiaiRutGon.add(XuLy_lui.get(i));
-                        Filter(dich, XuLy_lui.get(i).getGiaThiet());
-                        XuLy_lui.remove(XuLy_lui.get(i));
-                        i = 0;
-                        break;
-                    }
-                if (i == XuLy_lui.size())
+        while (!Kiemtra(dich, input_gt) && XuLy_lui.size() != 0) {
+            int i;
+            for (i = 0; i != XuLy_lui.size(); i++) {
+                if (Kiemtra_Lui(XuLy_lui.get(i).getKetLuan(), dich)) {
+                    LoiGiaiRutGon.add(XuLy_lui.get(i));
+                    Filter(dich, XuLy_lui.get(i).getGiaThiet());
+                    XuLy_lui.remove(XuLy_lui.get(i));
+                    i = 0;
                     break;
+                }
             }
+            if (i == XuLy_lui.size()) {
+                break;
+            }
+        }
     }
-    private void XuatKetQua(ArrayList<Rule> kq){
-        
-           String str;
-            int dem = 0;
-           // if (Kiemtra(input, input_Kl))
-           // {
-                for (int k = kq.size()-1; k >= 0; k--)
-                {
-                    for (int m = 0; m < ruleList_CB.size(); m++)
-                    {
-                        if (kq.get(k).getTen().compareTo(ruleList_CB.get(m).getTen()) == 0)
-                        {
-                            str = ruleList_CB.get(m).getTen() + ": ";
-                            dem += 1;
-                            for (int i = 0; i < ruleList_CB.get(m).getGiaThiet().size(); i++)
-                            {
-                              //  if (i >= 1)
-                                if(ruleList_CB.get(m).getGiaThiet().size()==1 || i == ruleList_CB.get(m).getGiaThiet().size()-1)
-                                    str = str + ruleList_CB.get(m).getGiaThiet().get(i);
-                                else
-                                    str = str + ruleList_CB.get(m).getGiaThiet().get(i) + " + ";
 
-                            }
-                           // str = str.Substring(0, str.Length);
-                            str = str + " -> ";
-                            for (int j = 0; j < ruleList_CB.get(m).getKetLuan().size(); j++)
-                            {
-                                if (j == ruleList_CB.get(m).getKetLuan().size() - 1)
-                                    str = str + ruleList_CB.get(m).getKetLuan().get(j);
-                                else
-                                    str = str + ruleList_CB.get(m).getKetLuan().get(j) + " + ";
-                            }
-                            
-                            list1.add(str);
-                            break;
+    private void XuatKetQua(ArrayList<Rule> kq) {
+
+        String str;
+        int dem = 0;
+        // if (Kiemtra(input, input_Kl))
+        // {
+        for (int k = kq.size() - 1; k >= 0; k--) {
+            for (int m = 0; m < ruleList_CB.size(); m++) {
+                if (kq.get(k).getTen().equalsIgnoreCase(ruleList_CB.get(m).getTen())) {
+                   // str = ruleList_CB.get(m).getTen() + ": ";
+                    str = "";
+                    dem += 1;
+                    for (int i = 0; i < ruleList_CB.get(m).getGiaThiet().size(); i++) {
+                        //  if (i >= 1)
+                        if (ruleList_CB.get(m).getGiaThiet().size() == 1 || i == ruleList_CB.get(m).getGiaThiet().size() - 1) {
+                            str = str + ruleList_CB.get(m).getGiaThiet().get(i);
+                        } else {
+                            str = str + ruleList_CB.get(m).getGiaThiet().get(i) + " + ";
+                        }
+
+                    }
+                    // str = str.Substring(0, str.Length);
+                    str = str + " -> ";
+                    for (int j = 0; j < ruleList_CB.get(m).getKetLuan().size(); j++) {
+                        if (j == ruleList_CB.get(m).getKetLuan().size() - 1) {
+                            str = str + ruleList_CB.get(m).getKetLuan().get(j);
+                        } else {
+                            str = str + ruleList_CB.get(m).getKetLuan().get(j) + " + ";
                         }
                     }
+
+                    list1.add(str);
+                    break;
                 }
+            }
+        }
         //    }
-        jLabel4.setText("Có "+dem+" phương trình");
+        jLabel4.setText("Có " + dem + " phương trình");
     }
 
-    public void items(){
-        
+    ArrayList<Rule> listTimKiem = new ArrayList<>();
+
+    //Hàm tìm kiếm phương trình với 1 input nhập vào
+    private void Find_GT() {
+        ArrayList<String> input = input_gt;
+        listTimKiem = new ArrayList<>();
+        ArrayList<Rule> XuLy = RuleList;
+        // vòng lặp để kiểm tra và thêm lời giải
+        for (int i = 0; i < XuLy.size(); i++) {
+            if (Kiemtra(XuLy.get(i).getGiaThiet(), input)) {
+                listTimKiem.add(XuLy.get(i));
+
+            }
+        }
     }
+
+    private void Find_KL() {
+        ArrayList<String> output = input_Kl;
+        listTimKiem = new ArrayList<>();
+        ArrayList<Rule> XuLy = RuleList;
+        // vòng lặp để kiểm tra và thêm phương trình vào lời giải
+        for (int i = 0; i < XuLy.size(); i++) {
+            if (Kiemtra(XuLy.get(i).getKetLuan(), output)) {
+                listTimKiem.add(XuLy.get(i));
+
+            }
+
+        }
+    }
+
+ 
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -476,20 +558,19 @@ public class DieuCheHoaHoc extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(DieuCheHoaHoc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
-   
-        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new DieuCheHoaHoc().setVisible(true);
             //XuLyFile();
         });
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

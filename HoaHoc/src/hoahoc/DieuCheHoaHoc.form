@@ -40,7 +40,11 @@
                       <Component id="jLabel4" min="-2" pref="203" max="-2" attributes="0"/>
                   </Group>
                   <Component id="list1" alignment="0" min="-2" pref="686" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="0" min="-2" pref="112" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jButton1" min="-2" pref="112" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                      <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jTextField2" alignment="0" min="-2" pref="514" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -62,7 +66,10 @@
               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
               <Component id="jTextField2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="list1" min="-2" pref="331" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -89,7 +96,9 @@
         <Property name="name" type="java.lang.String" value="txtInput_Giathiet" noResource="true"/>
       </Properties>
       <Events>
+        <EventHandler event="caretPositionChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="jTextField1CaretPositionChanged"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextField1KeyTyped"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -104,7 +113,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#x110;i&#x1ec1;u ch&#x1ebf;"/>
+        <Property name="text" type="java.lang.String" value="X&#x1eed; L&#xfd;"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
@@ -126,6 +135,15 @@
           <Color blue="14" green="14" red="d6" type="rgb"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ch&#x1ebf; &#x111;&#x1ed9; t&#xec;m ki&#x1ebf;m Ph&#x1b0;&#x1a1;ng Tr&#xec;nh H&#xf3;a H&#x1ecd;c"/>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jCheckBox1MouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
